@@ -41,7 +41,7 @@ while True:
 
             while guess in guessed:
                 temp_char = guess
-                guess = input("You have already guessed the character {temp_char}, please enter another character!\n\n")
+                guess = input(f"You have already guessed the character {temp_char}, please enter another character!\n\n")
                 utilities.endl()
 
             guessed.append(guess)
