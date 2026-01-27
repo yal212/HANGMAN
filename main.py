@@ -4,7 +4,7 @@ import hangman
 import util
 
 with open ("words.txt", "r") as f:
-    words = json.load(f)
+    words_list = json.load(f)
 
 played = False
 
@@ -20,10 +20,10 @@ while True:
     if (not played and response.lower() == "start") or (played and response.lower() == "play again"):
         
         played = True
-        word = random.choice(words).lower()
+        word = random.choice(words_list).lower()
         guessed = list()
-        l = len(word)
-        hidden_word = ['_'] * l
+        len_of_word = len(word)
+        hidden_word = ['_'] * len_of_word
         correct_guesses = 0
         wrong_guesses = 0
         correct = False
@@ -50,7 +50,7 @@ while True:
 
             correct_guess = False
 
-            for i in range(l):
+            for i in range(len_of_word):
                 if guess == word[i]:
                     hidden_word[i] = guess
                     correct_guess = True
@@ -59,7 +59,7 @@ while True:
             if not correct_guess:
                 wrong_guesses += 1
 
-            if correct_guesses == l:
+            if correct_guesses == len_of_word:
                 correct = True
             if wrong_guesses == 6:
                 wrong = True
