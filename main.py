@@ -1,55 +1,56 @@
 import json
 import random
 import hangman
-import utilities
+import util
 
-with open ("words.txt", "r") as f:    # load words.txt into words
+with open ("words.txt", "r") as f:
     words = json.load(f)
 
-played = False    # if the player played the game already
+played = False
 
 while True:
 
     if not played:
-        response = input("Type 'start' to start the game!\n\n")    # response to start the game
-    elif played:
-        response = input("Type 'play again' to start the game!\n\n")    # response to play again 
-    utilities.endl()
+        response = input("Type 'start' to start the game!\n\n")
+    else:
+        response = input("Type 'play again' to start the game!\n\n")
 
-    if (not played and response.lower() == "start") or (played and response.lower() == "play again"):    # make sure response is correct in both situation
+    util.endl()
+
+    if (not played and response.lower() == "start") or (played and response.lower() == "play again"):
         
         played = True
-        word = random.choice(words).lower()    # pick a random word
-        guessed = list()    # keep track of the players guesses
+        word = random.choice(words).lower()
+        guessed = list()
         l = len(word)
-        hidden_word = ['_'] * l    # player's word so far
-        correct_guesses = 0    # the count of characters guessed that matches the correct word
-        wrong_guesses = 0    # the count of characters guessed that doesn't match the correct word
-        correct = False    # if the player correctly guessed the word
-        wrong = False    # if the player ran out of guesses
+        hidden_word = ['_'] * l
+        correct_guesses = 0
+        wrong_guesses = 0
+        correct = False
+        wrong = False
 
-        while not correct and not wrong:    # loop when haven't guessed the correct word or haven't run out of guesses
+        while not correct and not wrong:
 
-            hangman.print_hangman(wrong_guesses)    # generate hangman text image
-            print("\n", *hidden_word, "\n")    # print current status of the player's word
-            guess = input("3nter your guess below:\n(your guess should be a character only :)\n\n")    # input guess
-            utilities.endl()
+            hangman.print_hangman(wrong_guesses)
+            print("\n", *hidden_word, "\n")
+            guess = input("3nter your guess below:\n(your guess should be a character only :)\n\n")
+            util.endl()
             
-            while not utilities.validguess(guess):    # make sure the guess is valid
+            while not util.is_valid_guess(guess):
                 guess = input("Please enter only a single alphabet!\n\n")
-                utilities.endl()
+                util.endl()
 
             while guess in guessed:
                 temp_char = guess
                 guess = input(f"You have already guessed the character {temp_char}, please enter another character!\n\n")
-                utilities.endl()
+                util.endl()
 
             guessed.append(guess)
             guessed.sort()
 
             correct_guess = False
 
-            for i in range(l):    # check if guess is in the correct word
+            for i in range(l):
                 if guess == word[i]:
                     hidden_word[i] = guess
                     correct_guess = True
@@ -58,16 +59,15 @@ while True:
             if not correct_guess:
                 wrong_guesses += 1
 
-            if correct_guesses == l:    # checks if the player correctly guessed the word or ran out of guesses
+            if correct_guesses == l:
                 correct = True
             if wrong_guesses == 6:
                 wrong = True
 
-        if correct:    # print the message of result
-            utilities.congrats_message(word)
+        if correct:
+            util.congrats_message(word)
             correct = False
         elif wrong:
-            utilities.fail_message(word)
+            util.fail_message(word)
             wrong = False
-        utilities.endl()
-
+        util.endl()

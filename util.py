@@ -1,13 +1,13 @@
 import hangman
 
-def validguess(guess):
-    if len(guess) == 1 and guess.isalpha():
+def is_valid_guess(player_guess):
+    if len(player_guess) == 1 and player_guess.isalpha():
         return True
     return False
 
 
 def congrats_message(word):
-    print(f"Congratulations! You guessed the word '{word}' correctly!")
+    print(f"\nCongratulations! You guessed the word '{word}' correctly!")
 
 
 def fail_message(word):
