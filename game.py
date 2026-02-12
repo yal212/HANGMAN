@@ -18,56 +18,42 @@ class GameState:
         return "".join(c if c in self.guessed_chr else "_" for c in self.secret_word)
 
     @property
-    def wrong_guesses(self) -> Set[str]:
-        """Returns only the guessed letters that are NOT IN the secret word"""
-        return set(list(c for c in self.guessed_chr if c not in self.secret_word))
-
-    @property
-    def correct_guesses(self) -> Set[str]:
-        """Returns only the guessed letters that are IN the secret word"""
-        return set(list(c for c in self.guessed_chr if c in self.secret_word))
-
-    @property
     def is_word_solved(self) -> bool:
         """Returns True if every letter in the secret word has been guessed"""
         return "_" not in self.display_word
 
     # --- Methods (actions that change or check state) ---
 
-    def guess_chr(self, letter: str) -> None:
-        """Adds a letter to guessed_chr, decrements remaining if wrong, updates status"""
-        self.guessed_chr.add(letter)
+    def is_valid_chr(self, letter: str) -> bool:
+        """Returns True if letter is a alphabet"""
+        return len(letter) == 1 and letter.isalpha()
 
     def is_already_guessed(self, letter: str) -> bool:
         """Returns True if the letter has already been guessed"""
         return letter in self.guessed_chr
 
+    def is_correct_guess(self, letter: str) -> bool:
+        """Returns True if the letter is a correct guess"""
+        return letter in self.secret_word
+
+    def guess_chr(self, letter: str) -> bool:
+        """Adds a letter to guessed_chr, decrements remaining if wrong, updates status if is valid guess"""
+        letter.lower()
+        if not self.is_valid_chr(letter) or self.is_already_guessed(letter):
+            return False
+        self.guessed_chr.add(letter)
+        if self.is_correct_guess(letter):
+            self.remaining_guesses -= 1
+        return True
+
+    def has_won(self):
+        """Returns True if won"""
+        return self.status == "won"
+
+    def has_lost(self):
+        """Returns True if lost"""
+        return self.status == "lost"
+
 
 if __name__ == "__main__":
-    test = GameState("hello")
-    print(test)
-    print(test.display_word)
-
-    test.guessed_chr.add("h")
-    print(test)
-    print(test.display_word)
-
-    test.guessed_chr.add("l")
-    print(test)
-    print(test.display_word)
-
-    test.guessed_chr.add("o")
-    print(test)
-    print(test.display_word)
-
-    test.guessed_chr.add("a")
-    print(test)
-    print(test.wrong_guesses)
-
-    test.guessed_chr.add("b")
-    print(test)
-    print(test.wrong_guesses)
-
-    test.guessed_chr.add("c")
-    print(test)
-    print(test.wrong_guesses)
+    pass
