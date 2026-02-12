@@ -88,8 +88,6 @@ from typing import Set, Literal
 
 @dataclass
 class GameState:
-    """Tracks the state of a Hangman game."""
-    
     secret_word: str
     remaining_guesses: int = 6
     guessed_chr: Set[str] = field(default_factory=set)
@@ -101,13 +99,11 @@ class GameState:
 ```python
     @property
     def display_word(self) -> str:
-        """Returns the word with unguessed letters as underscores."""
-        # TODO: Return string like "a p p _ e" for secret "apple" with guessed {'a','p','e'}
+        # TODO: Return word with unguessed letters as underscores, spaces between chars
         pass
     
     @property
     def is_word_solved(self) -> bool:
-        """Check if all letters in secret_word have been guessed."""
         # TODO: Return True if every letter in secret_word is in guessed_chr
         pass
 ```
@@ -116,62 +112,41 @@ class GameState:
 
 ```python
     def is_valid_chr(self, letter: str) -> bool:
-        """Check if input is a single alphabetic character."""
-        return len(letter) == 1 and letter.isalpha()
+        # TODO: Return True if letter is a single alphabetic character
+        pass
     
     def is_already_guessed(self, letter: str) -> bool:
-        """Check if letter was already guessed."""
-        return letter.lower() in self.guessed_chr
+        # TODO: Return True if lowercase letter is in guessed_chr
+        pass
     
     def is_correct_guess(self, letter: str) -> bool:
-        """Check if letter exists in the secret word."""
-        return letter.lower() in self.secret_word.lower()
+        # TODO: Return True if lowercase letter exists in lowercase secret_word
+        pass
 ```
 
 #### 2.4 Implement the main guess method
 
-**CRITICAL**: This method has several important requirements:
+**CRITICAL BUG WARNING**: Use `letter = letter.lower()` NOT `letter.lower()` (strings are immutable!)
 
 ```python
     def guess_chr(self, letter: str) -> bool:
-        """
-        Process a letter guess. Returns True if guess was accepted.
-        
-        IMPORTANT IMPLEMENTATION NOTES:
-        1. Convert to lowercase: letter = letter.lower()  # NOT just letter.lower()
-        2. Validate before processing
-        3. Add to guessed_chr set
-        4. Decrement remaining_guesses ONLY on INCORRECT guesses
-        5. Update status to "won" or "lost" when appropriate
-        """
-        # WARNING: This is wrong:    letter.lower()
-        # This is correct:           letter = letter.lower()
-        # The .lower() method returns a new string, it doesn't modify in place!
-        
-        letter = letter.lower()
-        
-        if not self.is_valid_chr(letter) or self.is_already_guessed(letter):
-            return False
-        
-        self.guessed_chr.add(letter)
-        
-        # TODO: If incorrect guess, decrement remaining_guesses
-        # TODO: Check win condition (is_word_solved) and set status = "won"
-        # TODO: Check lose condition (remaining_guesses <= 0) and set status = "lost"
-        
-        return True
+        # TODO: Convert letter to lowercase, validate, add to guessed_chr
+        # TODO: Decrement remaining_guesses ONLY on INCORRECT guesses
+        # TODO: Update status to "won" or "lost" when appropriate
+        # TODO: Return True if guess accepted, False otherwise
+        pass
 ```
 
 #### 2.5 Implement status check methods
 
 ```python
     def has_won(self) -> bool:
-        """Returns True if the game has been won."""
-        return self.status == "won"
+        # TODO: Return True if status is "won"
+        pass
     
     def has_lost(self) -> bool:
-        """Returns True if the game has been lost."""
-        return self.status == "lost"
+        # TODO: Return True if status is "lost"
+        pass
 ```
 
 ---
@@ -194,22 +169,18 @@ from game import GameState
 
 @pytest.fixture
 def new_game():
-    """Fresh game state with word 'python'."""
-    return GameState(secret_word="python", remaining_guesses=6)
+    # TODO: Return a fresh GameState with word "python" and 6 guesses
+    pass
 
 @pytest.fixture
 def nearly_won_game():
-    """Game state one correct guess from winning."""
-    game = GameState(secret_word="cat", remaining_guesses=6)
-    game.guessed_chr = {'c', 'a'}  # Just needs 't'
-    return game
+    # TODO: Return GameState for "cat" with {'c','a'} guessed (needs 't' to win)
+    pass
 
 @pytest.fixture
 def nearly_lost_game():
-    """Game state one wrong guess from losing."""
-    game = GameState(secret_word="cat", remaining_guesses=1)
-    game.guessed_chr = {'x', 'z', 'q', 'w', 'r'}
-    return game
+    # TODO: Return GameState for "cat" with 1 guess left and wrong letters guessed
+    pass
 ```
 
 #### 3.3 Create `tests/test_game_state.py`
@@ -220,51 +191,50 @@ from game import GameState
 
 class TestGameStateInit:
     def test_initial_status_is_ongoing(self, new_game):
-        assert new_game.status == "ongoing"
+        # TODO: Assert status equals "ongoing"
+        pass
     
     def test_initial_guessed_is_empty(self, new_game):
-        assert new_game.guessed_chr == set()
+        # TODO: Assert guessed_chr is empty set
+        pass
     
     def test_default_remaining_guesses(self):
-        game = GameState(secret_word="test")
-        assert game.remaining_guesses == 6
+        # TODO: Create GameState and assert remaining_guesses is 6
+        pass
 
 class TestGuessing:
     def test_correct_guess_does_not_decrement(self, new_game):
-        new_game.guess_chr('p')
-        assert new_game.remaining_guesses == 6
+        # TODO: Guess correct letter, verify remaining_guesses unchanged
+        pass
     
     def test_incorrect_guess_decrements(self, new_game):
-        new_game.guess_chr('z')
-        assert new_game.remaining_guesses == 5
+        # TODO: Guess wrong letter, verify remaining_guesses decreased by 1
+        pass
     
     def test_letter_added_to_guessed(self, new_game):
-        new_game.guess_chr('a')
-        assert 'a' in new_game.guessed_chr
+        # TODO: Guess a letter, verify it's in guessed_chr
+        pass
     
     def test_duplicate_guess_returns_false(self, new_game):
-        new_game.guess_chr('a')
-        assert new_game.guess_chr('a') is False
+        # TODO: Guess same letter twice, verify second returns False
+        pass
     
     def test_case_insensitive(self, new_game):
-        new_game.guess_chr('P')
-        assert 'p' in new_game.guessed_chr
+        # TODO: Guess uppercase letter, verify lowercase stored in guessed_chr
+        pass
     
     def test_invalid_input_rejected(self, new_game):
-        assert new_game.guess_chr('1') is False
-        assert new_game.guess_chr('ab') is False
-        assert new_game.guess_chr('') is False
+        # TODO: Test that numbers, multi-char, empty string return False
+        pass
 
 class TestWinLoseConditions:
     def test_winning_sets_status(self, nearly_won_game):
-        nearly_won_game.guess_chr('t')
-        assert nearly_won_game.status == "won"
-        assert nearly_won_game.has_won() is True
+        # TODO: Guess final letter, verify status is "won" and has_won() is True
+        pass
     
     def test_losing_sets_status(self, nearly_lost_game):
-        nearly_lost_game.guess_chr('b')  # Wrong guess
-        assert nearly_lost_game.status == "lost"
-        assert nearly_lost_game.has_lost() is True
+        # TODO: Guess wrong letter, verify status is "lost" and has_lost() is True
+        pass
 ```
 
 #### 3.4 Run tests
@@ -292,18 +262,10 @@ import json
 from pathlib import Path
 
 def load_word_list(filepath: str = "words.txt") -> list[str]:
-    """Load words from a JSON array file."""
-    path = Path(filepath)
-    if not path.exists():
-        raise FileNotFoundError(f"Word list not found: {filepath}")
-    
-    with open(path, 'r') as f:
-        words = json.load(f)
-    
-    if not isinstance(words, list) or not words:
-        raise ValueError("Word list must be a non-empty JSON array")
-    
-    return words
+    # TODO: Load and return words from JSON array file
+    # TODO: Raise FileNotFoundError if file doesn't exist
+    # TODO: Raise ValueError if not a non-empty list
+    pass
 ```
 
 #### 4.3 Implement `utils.py`
@@ -313,19 +275,8 @@ import random
 from words import load_word_list
 
 def select_random_word(words: list[str] | None = None) -> str:
-    """
-    Select a random word from the provided list or default word list.
-    
-    Args:
-        words: Optional list of words. If None, loads from words.txt
-    
-    Returns:
-        A randomly selected word (lowercase)
-    """
-    if words is None:
-        words = load_word_list()
-    
-    # TODO: Use random.choice to select and return a lowercase word
+    # TODO: If words is None, load from words.txt
+    # TODO: Return random.choice() from list, lowercase
     pass
 ```
 
@@ -336,23 +287,16 @@ import pytest
 from utils import select_random_word
 
 def test_returns_word_from_list():
-    words = ["apple", "banana", "cherry"]
-    result = select_random_word(words)
-    assert result in words
+    # TODO: Call with a list, verify result is in that list
+    pass
 
 def test_returns_lowercase():
-    words = ["APPLE", "BANANA"]
-    result = select_random_word(words)
-    assert result == result.lower()
+    # TODO: Call with uppercase words, verify result is lowercase
+    pass
 
 def test_loads_default_list(tmp_path, monkeypatch):
-    # Create a temporary word list
-    word_file = tmp_path / "words.txt"
-    word_file.write_text('["test", "word"]')
-    monkeypatch.chdir(tmp_path)
-    
-    result = select_random_word()
-    assert result in ["test", "word"]
+    # TODO: Create temp words.txt, change dir, verify select_random_word() works
+    pass
 ```
 
 ---
@@ -366,45 +310,15 @@ import curses
 from contextlib import contextmanager
 
 def init_screen(stdscr):
-    """
-    Initialize curses screen with proper settings.
-    
-    Call this at the start of your main function.
-    """
-    curses.curs_set(0)          # Hide cursor
-    curses.noecho()             # Don't echo keypresses
-    stdscr.keypad(True)         # Enable special keys
-    stdscr.clear()
-    
-    # Optional: Set up color pairs if terminal supports it
-    if curses.has_colors():
-        curses.start_color()
-        curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)   # Correct
-        curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)     # Wrong
-        curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)  # Prompt
+    # TODO: Hide cursor, disable echo, enable keypad, clear screen
+    # TODO: (Optional) Set up color pairs if terminal supports colors
+    pass
 
 @contextmanager
 def curses_wrapper():
-    """
-    Context manager for safe curses initialization/cleanup.
-    
-    Usage:
-        with curses_wrapper() as stdscr:
-            # your game code
-    """
-    stdscr = None
-    try:
-        stdscr = curses.initscr()
-        curses.cbreak()
-        curses.noecho()
-        stdscr.keypad(True)
-        yield stdscr
-    finally:
-        if stdscr:
-            stdscr.keypad(False)
-        curses.nocbreak()
-        curses.echo()
-        curses.endwin()
+    # TODO: Implement context manager that initializes curses in try block
+    # TODO: Clean up with curses.endwin() in finally block (must always run!)
+    pass
 ```
 
 ---
@@ -487,52 +401,21 @@ HANGMAN_STAGES = [
 
 ```python
 def draw_gallows(win, remaining_guesses: int, start_row: int = 1):
-    """
-    Draw the hangman gallows based on remaining guesses.
-    
-    Args:
-        win: curses window
-        remaining_guesses: Number of guesses left (0-6)
-        start_row: Row to start drawing
-    """
-    # Clamp to valid range
-    stage = max(0, min(6, remaining_guesses))
-    art = HANGMAN_STAGES[stage]
-    
-    for i, line in enumerate(art.strip().split('\n')):
-        win.addstr(start_row + i, 2, line)
-    
-    win.refresh()
+    # TODO: Get correct stage from HANGMAN_STAGES based on remaining_guesses
+    # TODO: Draw each line of ASCII art with win.addstr()
+    pass
 
 def draw_word(win, state, row: int):
-    """
-    Display the secret word with underscores for unguessed letters.
-    
-    Example: "p y _ _ o n" for "python" with guessed {'p', 'y', 'o', 'n'}
-    """
-    display = state.display_word  # Uses the property you implemented
-    win.addstr(row, 2, f"Word: {display}")
-    win.refresh()
+    # TODO: Display "Word: {state.display_word}" at the given row
+    pass
 
 def draw_guessed_letters(win, state, row: int):
-    """
-    Show all guessed letters, sorted alphabetically.
-    
-    Example: "Guessed: a, e, i, o, u"
-    """
-    letters = sorted(state.guessed_chr)
-    guessed_str = ", ".join(letters) if letters else "(none)"
-    win.addstr(row, 2, f"Guessed: {guessed_str}")
-    win.refresh()
+    # TODO: Display sorted guessed letters like "Guessed: a, e, i" or "(none)"
+    pass
 
 def draw_status(win, message: str, row: int, color_pair: int = 0):
-    """
-    Display a status message (instructions, errors, game result).
-    """
-    win.move(row, 0)
-    win.clrtoeol()  # Clear the line first
-    win.addstr(row, 2, message, curses.color_pair(color_pair))
-    win.refresh()
+    # TODO: Clear line, then display message with optional color
+    pass
 ```
 
 ---
@@ -543,39 +426,11 @@ def draw_status(win, message: str, row: int, color_pair: int = 0):
 
 ```python
 def get_letter(win, state, prompt_row: int) -> str | None:
-    """
-    Wait for and validate a letter input from the user.
-    
-    Returns:
-        A valid, unguessed lowercase letter, or None if invalid
-    """
-    draw_status(win, "Guess a letter: ", prompt_row, color_pair=3)
-    
-    key = win.getch()
-    
-    # Handle special keys (quit on 'q' or ESC)
-    if key == ord('q') or key == 27:  # ESC
-        return None
-    
-    # Convert to character
-    try:
-        letter = chr(key).lower()
-    except (ValueError, OverflowError):
-        draw_status(win, "Invalid key. Press a letter.", prompt_row, color_pair=2)
-        return get_letter(win, state, prompt_row)  # Retry
-    
-    # Validate
-    if not letter.isalpha():
-        draw_status(win, "Please enter a letter (a-z).", prompt_row, color_pair=2)
-        win.getch()  # Wait for acknowledgment
-        return get_letter(win, state, prompt_row)
-    
-    if state.is_already_guessed(letter):
-        draw_status(win, f"'{letter}' already guessed. Try another.", prompt_row, color_pair=2)
-        win.getch()
-        return get_letter(win, state, prompt_row)
-    
-    return letter
+    # TODO: Show prompt, get keypress, return None on quit (q/ESC)
+    # TODO: Validate: alphabetic, not already guessed
+    # TODO: On invalid input, show error and retry
+    # TODO: Return valid lowercase letter
+    pass
 ```
 
 ---
@@ -612,46 +467,10 @@ from ui import (
 )
 
 def main(stdscr):
-    """Main game function, called by curses.wrapper()."""
-    init_screen(stdscr)
-    
-    # Setup
-    word = select_random_word()
-    state = GameState(secret_word=word)
-    
-    # Game loop
-    while state.status == "ongoing":
-        stdscr.clear()
-        
-        # Draw UI elements
-        draw_gallows(stdscr, state.remaining_guesses)
-        draw_word(stdscr, state, row=10)
-        draw_guessed_letters(stdscr, state, row=12)
-        draw_status(stdscr, f"Remaining: {state.remaining_guesses}", row=14)
-        
-        # Get input
-        letter = get_letter(stdscr, state, prompt_row=16)
-        
-        if letter is None:  # User quit
-            break
-        
-        # Process guess
-        state.guess_chr(letter)
-    
-    # Game over
-    stdscr.clear()
-    draw_gallows(stdscr, state.remaining_guesses)
-    draw_word(stdscr, state, row=10)
-    
-    if state.has_won():
-        draw_status(stdscr, "Congratulations! You won!", row=14, color_pair=1)
-    elif state.has_lost():
-        draw_status(stdscr, f"Game over! The word was: {state.secret_word}", row=14, color_pair=2)
-    else:
-        draw_status(stdscr, "Thanks for playing!", row=14)
-    
-    draw_status(stdscr, "Press any key to exit...", row=16)
-    stdscr.getch()
+    # TODO: Initialize screen, select word, create GameState
+    # TODO: Game loop: draw UI, get input, process guess until win/lose/quit
+    # TODO: Show final result and wait for keypress
+    pass
 
 if __name__ == "__main__":
     curses.wrapper(main)
@@ -669,47 +488,15 @@ from unittest.mock import MagicMock, call
 from game import GameState
 
 class MockWindow:
-    """Mock curses window that records all addstr calls."""
-    
-    def __init__(self):
-        self.calls = []
-        self.cleared = False
-    
-    def addstr(self, row, col, text, *args):
-        self.calls.append((row, col, text))
-    
-    def clear(self):
-        self.cleared = True
-        self.calls = []
-    
-    def clrtoeol(self):
-        pass
-    
-    def move(self, row, col):
-        pass
-    
-    def refresh(self):
-        pass
-    
-    def getch(self):
-        return ord('a')
-    
-    def get_text_at(self, row):
-        """Helper to find text drawn at a specific row."""
-        return [text for r, c, text in self.calls if r == row]
+    # TODO: Create mock that records addstr() calls in self.calls list
+    # TODO: Implement: __init__, addstr, clear, clrtoeol, move, refresh, getch
+    # TODO: Add helper get_text_at(row) to find text drawn at specific row
+    pass
 
-# Example test
 def test_draw_word_shows_underscores():
-    from ui import draw_word
-    
-    mock_win = MockWindow()
-    state = GameState(secret_word="cat")
-    state.guessed_chr = {'c', 't'}
-    
-    draw_word(mock_win, state, row=5)
-    
-    texts = mock_win.get_text_at(5)
-    assert any("c _ t" in text or "c_t" in text for text in texts)
+    # TODO: Create MockWindow, create GameState with partial guesses
+    # TODO: Call draw_word(), verify underscores appear for unguessed letters
+    pass
 ```
 
 ---
@@ -760,11 +547,8 @@ Once the core game works, consider these enhancements:
 #### 11.1 Hint system
 ```python
 def get_hint(state: GameState) -> str | None:
-    """Reveal a random unguessed letter."""
-    unguessed = set(state.secret_word.lower()) - state.guessed_chr
-    if unguessed:
-        return random.choice(list(unguessed))
-    return None
+    # TODO: Return a random unguessed letter from secret_word, or None
+    pass
 ```
 
 #### 11.2 Persistent scores (`scores.json`)
@@ -772,40 +556,32 @@ def get_hint(state: GameState) -> str | None:
 import json
 
 def save_score(word: str, won: bool, guesses_used: int):
-    """Append game result to scores file."""
-    # TODO: Load existing scores, append new one, save
+    # TODO: Load existing scores, append new result, save to file
     pass
 ```
 
 #### 11.3 Difficulty levels
 ```python
 DIFFICULTY = {
-    "easy": (4, 6),      # 4-6 letter words
-    "medium": (7, 9),    # 7-9 letter words
-    "hard": (10, 15),    # 10+ letter words
+    "easy": (4, 6),
+    "medium": (7, 9),
+    "hard": (10, 15),
 }
 
 def select_word_by_difficulty(difficulty: str) -> str:
-    min_len, max_len = DIFFICULTY[difficulty]
-    words = [w for w in load_word_list() if min_len <= len(w) <= max_len]
-    return random.choice(words)
+    # TODO: Filter word list by length range, return random choice
+    pass
 ```
 
 #### 11.4 Automated gameplay tests
 ```python
 def test_full_game_win():
-    """Simulate a complete winning game."""
-    state = GameState(secret_word="cat")
-    for letter in "cat":
-        state.guess_chr(letter)
-    assert state.has_won()
+    # TODO: Guess all correct letters, verify has_won() is True
+    pass
 
 def test_full_game_loss():
-    """Simulate a complete losing game."""
-    state = GameState(secret_word="xyz", remaining_guesses=3)
-    for letter in "abc":
-        state.guess_chr(letter)
-    assert state.has_lost()
+    # TODO: Guess all wrong letters until remaining_guesses=0, verify has_lost()
+    pass
 ```
 
 ---
