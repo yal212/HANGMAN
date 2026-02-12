@@ -11,8 +11,6 @@ class GameState:
     guessed_chr: Set[str] = field(default_factory=set)
     status: Literal["ongoing", "won", "lost"] = "ongoing"
 
-    # --- Properties (computed, read-only) ---
-
     @property
     def display_word(self) -> str:
         """Returns the word with unguessed letters hidden, e.g. 'h _ l l o'"""
@@ -22,8 +20,6 @@ class GameState:
     def is_word_solved(self) -> bool:
         """Returns True if every letter in the secret word has been guessed"""
         return "_" not in self.display_word
-
-    # --- Methods (actions that change or check state) ---
 
     def is_valid_chr(self, letter: str) -> bool:
         """Returns True if letter is a alphabet"""
