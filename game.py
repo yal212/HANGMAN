@@ -4,6 +4,7 @@ from typing import Literal, Set
 
 @dataclass
 class GameState:
+    """Tracks the state of a Hangman game."""
 
     secret_word: str
     remaining_guesses: int = 6
@@ -37,13 +38,25 @@ class GameState:
         return letter in self.secret_word
 
     def guess_chr(self, letter: str) -> bool:
-        """Adds a letter to guessed_chr, decrements remaining if wrong, updates status if is valid guess"""
-        letter.lower()
+        """
+        Process a letter guess. Returns True if guess was accepted.
+        """
+        letter = letter.lower()
+
         if not self.is_valid_chr(letter) or self.is_already_guessed(letter):
             return False
+
         self.guessed_chr.add(letter)
-        if self.is_correct_guess(letter):
+
+        if not self.is_correct_guess(letter):
             self.remaining_guesses -= 1
+
+        if self.is_word_solved:
+            self.status = "won"
+
+        if self.remaining_guesses <= 0:
+            self.status = "lost"
+
         return True
 
     def has_won(self):
